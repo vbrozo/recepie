@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Discover a new recipe every day — browse, filter, and save your favourite dishes from around the world." />
+  <title>Recipe of the Day — Discover & Cook</title>
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* Extra page-specific tweaks */
+    .hero-cuisine-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================================================
+     LOADING OVERLAY
+     ================================================ -->
+<div class="loading-overlay" id="loadingOverlay" role="status" aria-label="Loading recipes">
+  <div class="spinner" aria-hidden="true"></div>
+  <p class="loading-text">Loading recipes…</p>
+</div>
+
+<!-- ================================================
+     HEADER
+     ================================================ -->
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+
+    <!-- Logo -->
+    <a href="index.html" class="site-logo" aria-label="Recipe of the Day — Home">
+      <div class="logo-icon" aria-hidden="true">
+        <i class="fa-solid fa-utensils"></i>
+      </div>
+      <div class="logo-text">
+        Recipe of the Day
+        <span>Discover &amp; Cook</span>
+      </div>
+    </a>
+
+    <!-- Main Nav -->
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="index.html" class="nav-link active">
+        <i class="fa-solid fa-house" aria-hidden="true"></i> Home
+      </a>
+      <a href="#favorites-section" class="nav-link" id="navFavorites">
+        <i class="fa-solid fa-heart" aria-hidden="true"></i> Favorites
+      </a>
+      <a href="#recent-section" class="nav-link" id="navRecents">
+        <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Recents
+      </a>
+    </nav>
+
+    <!-- Search -->
+    <div class="header-search" role="search">
+      <div class="search-input-wrap">
+        <input
+          type="search"
+          id="searchInput"
+          class="search-input"
+          placeholder="Search recipes, cuisines…"
+          aria-label="Search recipes"
+          autocomplete="off"
+        />
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      </div>
+      <div class="search-dropdown" id="searchDropdown" role="listbox" aria-label="Search suggestions"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="header-actions">
+      <button
+        class="dark-mode-toggle"
+        id="darkModeToggle"
+        aria-label="Toggle dark mode"
+        title="Toggle dark/light mode"
+      >
+        <i class="fa-solid fa-moon icon-moon" aria-hidden="true"></i>
+        <i class="fa-solid fa-sun icon-sun" aria-hidden="true"></i>
+      </button>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation menu" aria-expanded="false">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+
+  </div><!-- /header-inner -->
+</header>
+
+<!-- Mobile Nav Drawer -->
+<nav class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile navigation">
+  <a href="index.html" class="nav-link active">
+    <i class="fa-solid fa-house" aria-hidden="true"></i> Home
+  </a>
+  <a href="#favorites-section" class="nav-link">
+    <i class="fa-solid fa-heart" aria-hidden="true"></i> Favorites
+  </a>
+  <a href="#recent-section" class="nav-link">
+    <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Recents
+  </a>
+</nav>
+
+<!-- ================================================
+     HERO — RECIPE OF THE DAY
+     ================================================ -->
+<section class="hero" id="heroSection" aria-labelledby="heroTitle">
+
+  <!-- Background image -->
+  <img
+    class="hero-bg"
+    id="heroBg"
+    src="https://picsum.photos/seed/hero/1600/900"
+    alt=""
+    role="presentation"
+    loading="eager"
+  />
+  <div class="hero-overlay" aria-hidden="true"></div>
+
+  <div class="container hero-content">
+    <div class="hero-label" id="heroLabel">
+      <i class="fa-solid fa-star" aria-hidden="true"></i>
+      Recipe of the Day
+    </div>
+
+    <h1 class="hero-title" id="heroTitle">Loading today's recipe…</h1>
+
+    <p class="hero-description" id="heroDescription"></p>
+
+    <div class="hero-meta" id="heroMeta" role="list" aria-label="Recipe details"></div>
+
+    <div class="hero-actions">
+      <button class="btn btn-primary btn-lg" id="heroViewBtn" aria-label="View full recipe">
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+        View Full Recipe
+      </button>
+      <button class="btn btn-secondary btn-lg" id="randomRecipeBtn" aria-label="Show a random recipe">
+        <i class="fa-solid fa-shuffle" aria-hidden="true"></i>
+        Random Recipe
+      </button>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================================================
+     FILTER SECTION
+     ================================================ -->
+<section class="filters-section" aria-label="Filter recipes">
+  <div class="container">
+
+    <div class="filters-header">
+      <span class="filters-label">
+        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+        Filter Recipes
+        <span class="active-count-badge" id="activeCountBadge" aria-live="polite"></span>
+      </span>
+      <button class="clear-filters-btn" id="clearFiltersBtn" aria-label="Clear all filters">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i> Clear all
+      </button>
+    </div>
+
+    <div class="filter-chips-scroll" role="group" aria-label="Filter options">
+      <div class="filter-chips" id="filterChips">
+
+        <!-- Category -->
+        <button class="filter-chip" data-filter="Breakfast" data-type="category" aria-pressed="false">
+          <i class="fa-solid fa-sun" aria-hidden="true"></i> Breakfast
+        </button>
+        <button class="filter-chip" data-filter="Lunch" data-type="category" aria-pressed="false">
+          <i class="fa-solid fa-bowl-food" aria-hidden="true"></i> Lunch
+        </button>
+        <button class="filter-chip" data-filter="Dinner" data-type="category" aria-pressed="false">
+          <i class="fa-solid fa-moon" aria-hidden="true"></i> Dinner
+        </button>
+        <button class="filter-chip" data-filter="Dessert" data-type="category" aria-pressed="false">
+          <i class="fa-solid fa-cake-candles" aria-hidden="true"></i> Dessert
+        </button>
+        <button class="filter-chip" data-filter="Snack" data-type="category" aria-pressed="false">
+          <i class="fa-solid fa-cookie-bite" aria-hidden="true"></i> Snack
+        </button>
+
+        <!-- Dietary -->
+        <button class="filter-chip" data-filter="vegetarian" data-type="dietary" aria-pressed="false">
+          <i class="fa-solid fa-leaf" aria-hidden="true"></i> Vegetarian
+        </button>
+        <button class="filter-chip" data-filter="vegan" data-type="dietary" aria-pressed="false">
+          <i class="fa-solid fa-seedling" aria-hidden="true"></i> Vegan
+        </button>
+        <button class="filter-chip" data-filter="glutenFree" data-type="dietary" aria-pressed="false">
+          <i class="fa-solid fa-wheat-awn-circle-exclamation" aria-hidden="true"></i> Gluten Free
+        </button>
+
+        <!-- Cuisine -->
+        <button class="filter-chip" data-filter="Italian" data-type="cuisine" aria-pressed="false">
+          <i class="fa-solid fa-pizza-slice" aria-hidden="true"></i> Italian
+        </button>
+        <button class="filter-chip" data-filter="Mexican" data-type="cuisine" aria-pressed="false">
+          <i class="fa-solid fa-pepper-hot" aria-hidden="true"></i> Mexican
+        </button>
+        <button class="filter-chip" data-filter="Asian" data-type="cuisine" aria-pressed="false">
+          <i class="fa-solid fa-bowl-rice" aria-hidden="true"></i> Asian
+        </button>
+        <button class="filter-chip" data-filter="Indian" data-type="cuisine" aria-pressed="false">
+          <i class="fa-solid fa-mortar-pestle" aria-hidden="true"></i> Indian
+        </button>
+        <button class="filter-chip" data-filter="American" data-type="cuisine" aria-pressed="false">
+          <i class="fa-solid fa-burger" aria-hidden="true"></i> American
+        </button>
+        <button class="filter-chip" data-filter="Mediterranean" data-type="cuisine" aria-pressed="false">
+          <i class="fa-solid fa-fish" aria-hidden="true"></i> Mediterranean
+        </button>
+
+        <!-- Difficulty -->
+        <button class="filter-chip" data-filter="Easy" data-type="difficulty" aria-pressed="false">
+          <i class="fa-regular fa-circle" aria-hidden="true"></i> Easy
+        </button>
+        <button class="filter-chip" data-filter="Medium" data-type="difficulty" aria-pressed="false">
+          <i class="fa-regular fa-circle-half-stroke" aria-hidden="true"></i> Medium
+        </button>
+        <button class="filter-chip" data-filter="Hard" data-type="difficulty" aria-pressed="false">
+          <i class="fa-solid fa-circle" aria-hidden="true"></i> Hard
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================================
+     RECIPES GRID
+     ================================================ -->
+<main>
+<section class="recipes-section section" id="recipesSection">
+  <div class="container">
+
+    <div class="recipes-header">
+      <div>
+        <h2 class="section-title">All Recipes</h2>
+        <p class="recipes-count" id="recipesCount" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="recipe-grid" id="recipeGrid" role="list" aria-label="Recipe cards">
+      <!-- Populated by script.js -->
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================================
+     FAVORITES SECTION
+     ================================================ -->
+<section class="favorites-section section" id="favorites-section" aria-labelledby="favoritesTitle" style="display:none;">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title" id="favoritesTitle">
+          <i class="fa-solid fa-heart" style="color:var(--color-danger);margin-right:8px;" aria-hidden="true"></i>
+          Your Favorites
+        </h2>
+        <p class="recipes-count" id="favoritesCount" aria-live="polite"></p>
+      </div>
+    </div>
+    <div class="horizontal-scroll-grid" id="favoritesGrid" role="list" aria-label="Favorite recipes">
+      <!-- Populated by script.js -->
+    </div>
+  </div>
+</section>
+
+<!-- ================================================
+     RECENT RECIPES SECTION
+     ================================================ -->
+<section class="recent-section section" id="recent-section" aria-labelledby="recentsTitle" style="display:none;">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title" id="recentsTitle">
+          <i class="fa-solid fa-clock-rotate-left" style="color:var(--color-primary);margin-right:8px;" aria-hidden="true"></i>
+          Recently Viewed
+        </h2>
+        <p class="recipes-count" id="recentsCount" aria-live="polite"></p>
+      </div>
+    </div>
+    <div class="horizontal-scroll-grid" id="recentsGrid" role="list" aria-label="Recently viewed recipes">
+      <!-- Populated by script.js -->
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ================================================
+     FOOTER
+     ================================================ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <div class="site-logo" style="margin-bottom:12px;">
+          <div class="logo-icon" aria-hidden="true">
+            <i class="fa-solid fa-utensils"></i>
+          </div>
+          <div class="logo-text">
+            Recipe of the Day
+            <span>Discover &amp; Cook</span>
+          </div>
+        </div>
+        <p>A curated collection of 20 globally-inspired recipes. Cook something new every day.</p>
+      </div>
+
+      <div>
+        <h3 class="footer-heading">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="index.html"><i class="fa-solid fa-house fa-fw" aria-hidden="true"></i> Home</a></li>
+          <li><a href="#favorites-section"><i class="fa-solid fa-heart fa-fw" aria-hidden="true"></i> Favorites</a></li>
+          <li><a href="#recent-section"><i class="fa-solid fa-clock fa-fw" aria-hidden="true"></i> Recent</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="footer-heading">Cuisines</h3>
+        <ul class="footer-links">
+          <li><a href="#">Italian</a></li>
+          <li><a href="#">Mexican</a></li>
+          <li><a href="#">Asian</a></li>
+          <li><a href="#">Indian</a></li>
+          <li><a href="#">Mediterranean</a></li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Recipe of the Day. Built with <i class="fa-solid fa-heart" style="color:#e85d04;" aria-hidden="true"></i> and great food.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ================================================
+     SCROLL TO TOP
+     ================================================ -->
+<button class="scroll-top-btn" id="scrollTopBtn" aria-label="Scroll to top">
+  <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Scripts -->
+<script src="script.js"></script>
+</body>
+</html>
